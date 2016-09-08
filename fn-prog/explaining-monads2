@@ -1,0 +1,20 @@
+:load explaining-monads
+trait Monad[M[_]] {
+def pure[A](a: A): M[A]
+def flatMap[A, B](a: M[A])(fn: A => M[B]): M[B]
+}
+trait Monad[M[_]] {
+def pure[A](a: A): M[A]
+def flatMap[A, B](a: M[A])(fn: A => M[B]): M[B]
+def map[A, B](a: M[A])(fn: A => B): M[B] = {
+flatMap(a){ b: A => pure(fn(b)) }
+}
+}
+trait Monad[M[_]] extends Functor[M] {
+def pure[A](a: A): M[A]
+def flatMap[A, B](a: M[A])(fn: A => M[B]): M[B]
+def map[A, B](a: M[A]
+)(fn: A => B): M[B] = flatMap(a){ b: A => pure(fn(b)) }
+def append[A, B, C](f1: A => M[B], f2: B => M[C]): A => M[C] = a => flatMap(f1(a)){ b: B => f2(b) }
+def identity[A]: A => M[A] = a => pure(a)
+}
